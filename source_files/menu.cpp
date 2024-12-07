@@ -18,11 +18,11 @@ void menu() {
 
     while (!exit) {
         cout << "\n1) Gerenciar Passageiros\n"
-             << "2) Gerenciar Tripulacao\n"
-             << "3) Gerenciar Voos\n"
-             << "4) Gerenciar Reservas\n"
-             << "5) Programa de Fidelidade\n"
-             << "6) Sair\n";
+            << "2) Gerenciar Tripulacao\n"
+            << "3) Gerenciar Voos\n"
+            << "4) Gerenciar Reservas\n"
+            << "5) Programa de Fidelidade\n"
+            << "6) Sair\n";
 
         int input = 0;
         cin >> input;
@@ -62,11 +62,11 @@ void menu_voo() {
 
     while (!exit) {
         cout << "\n*** Gerenciar Voos ***\n"
-             << "1) Cadastrar Voo\n"
-             << "2) Atualizar Voo\n"
-             << "3) Buscar Voo\n"
-             << "4) Excluir Voo\n"
-             << "5) Sair\n";
+            << "1) Cadastrar Voo\n"
+            << "2) Atualizar Voo\n"
+            << "3) Buscar Voo\n"
+            << "4) Excluir Voo\n"
+            << "5) Sair\n";
 
         int input = 0;
         cin >> input;
@@ -135,11 +135,11 @@ void menu_reserva() {
 
     while (!exit) {
         cout << "\n*** Gerenciar Reservas ***\n"
-             << "1) Cadastrar Reserva\n"
-             << "2) Atualizar Reserva\n"
-             << "3) Buscar Reserva\n"
-             << "4) Excluir Reserva\n"
-             << "5) Sair\n";
+            << "1) Cadastrar Reserva\n"
+            << "2) Atualizar Reserva\n"
+            << "3) Buscar Reserva\n"
+            << "4) Excluir Reserva\n"
+            << "5) Sair\n";
 
         int input = 0;
         cin >> input;
@@ -196,22 +196,32 @@ void menu_passageiro(){
 
     while (!exit) {
         cout << "\n*** Gerenciar Passageiros ***\n"
-             << "1) Cadastrar Passageiro\n"
-             << "2) Atualizar Passageiro\n"
-             << "3) Buscar Passageiro\n"
-             << "4) Excluir Passageiro\n"
-             << "5) Sair\n";
+            << "1) Cadastrar Passageiro\n"
+            << "2) Atualizar Passageiro\n"
+            << "3) Buscar Passageiro\n"
+            << "4) Excluir Passageiro\n"
+            << "5) Sair\n";
 
         int input = 0;
         cin >> input;
 
         switch (input) {
             case 1: {
-                string nomePassageiro;
+                string nomePassageiro, telefonePassageiro;
+                Passageiro p;
 
                 cout << "Digite o nome do passageiro: ";
                 cin.ignore();
                 getline(cin, nomePassageiro);
+                p.setPessoa(nomePassageiro);
+
+                cout << "Digite o telefone do passageiro: ";
+                cin.ignore();
+                getline(cin, telefonePassageiro);
+                p.setTelefone(telefonePassageiro);
+
+                // p.mostrarPessoa();
+
                 break;
             }
             case 2:
@@ -242,11 +252,11 @@ void menu_tripulacao(){
 
     while (!exit) {
         cout << "\n*** Gerenciar Tripulacao ***\n"
-             << "1) Cadastrar Tripulacao\n"
-             << "2) Atualizar Tripulacao\n"
-             << "3) Buscar Tripulacao\n"
-             << "4) Excluir Tripulacao\n"
-             << "5) Sair\n";
+            << "1) Cadastrar Tripulacao\n"
+            << "2) Atualizar Tripulacao\n"
+            << "3) Buscar Tripulacao\n"
+            << "4) Excluir Tripulacao\n"
+            << "5) Sair\n";
 
         int input = 0;
         cin >> input;
