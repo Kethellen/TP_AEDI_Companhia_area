@@ -2,10 +2,19 @@
 #include "fazCodigo.h"
 
 /**
- * Construtor da classe Pessoa
+ * Construtor padrao da classe Pessoa
+ */
+Pessoa::Pessoa() {
+    codigo = 0;
+    nome = '\0';
+    telefone = '\0';
+}
+
+/**
+ * Construtor parametrizado da classe Pessoa
  */
 Pessoa::Pessoa(string nome, string telefone) {
-    this->codigo = 0; // O codigo sera atribuido pelas classes derivadas
+    this->codigo = 0;
     this->nome = nome;
     this->telefone = telefone;
 }
@@ -51,7 +60,24 @@ int Pessoa::armazenaDadosEmArquivo(string arquivo, string dados) {
     return 0;
 }
 
+/**
+ * Metodo para definir acessar e definir o atributo nome da classe pessoa
+ */
+void Pessoa::setPessoa(string nome){
+    this->nome, nome;
+}
 
-int Pessoa::getPessoa(string nome){
+/**
+ * Metodo para definir acessar e definir o atributo telefone da classe pessoa
+ */
+void Pessoa::setTelefone(string telefone){
+    this->telefone, telefone;
+}
 
+/**
+ * Metodo para exibir os atributos da classe pessoa
+ */
+int Pessoa::mostrarPessoa(){
+    cout << "Nome da pessoa: " << nome << endl;
+    cout << "Telefone: " << telefone << endl;
 }

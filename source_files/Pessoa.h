@@ -12,12 +12,13 @@ using namespace std;
  * Classe base para representar uma pessoa (Passageiro ou Tripulacao)
  */
 class Pessoa {
-protected:
+private:
     int codigo;
     string nome;
     string telefone;
 
 public:
+    Pessoa();
     Pessoa(string nome, string telefone);
     virtual ~Pessoa() = default;
 
@@ -25,7 +26,10 @@ public:
     bool pessoaExiste(string identificador, string arquivo);
     int armazenaDadosEmArquivo(string arquivo, string dados);
 
-    int getPessoa(string nome);
+    //Metodos set para para os atributos da pessoa
+    void setPessoa(string nome);
+    void setTelefone(string telefone);
+    int mostrarPessoa();
 };
 
 #endif
