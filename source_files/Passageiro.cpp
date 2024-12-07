@@ -2,7 +2,7 @@
 #include "fazCodigo.h"
 
 /**
- * Construtor da classe Passageiro
+ * Construtor parametrizado da classe Passageiro
  */
 Passageiro::Passageiro(string nome, string telefone, string endereco)
     : Pessoa(nome, telefone) {
@@ -21,9 +21,18 @@ Passageiro::Passageiro(string nome, string telefone, string endereco)
 }
 
 /**
+ * Construtor padrão da classe Passageiro
+ */
+Passageiro::Passageiro(){
+    this->codigo = fazCodigo("../data-files/passageiros.txt");
+    endereco = '\0';
+    pontosDeFidelidade = 0;
+}
+
+/**
  * Metodo que cria a string de dados para armazenamento no arquivo
  */
 string Passageiro::criaStringDeDados() {
     return to_string(this->codigo) + "," + this->nome + "," + this->telefone + "," +
-           this->endereco + "," + to_string(this->pontosDeFidelidade) + ";\n";
+            this->endereco + "," + to_string(this->pontosDeFidelidade) + ";\n";
 }

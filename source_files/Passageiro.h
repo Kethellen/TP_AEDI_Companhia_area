@@ -12,6 +12,7 @@ private:
     int pontosDeFidelidade;
 
 public:
+    Passageiro();
     Passageiro(string nome, string telefone, string endereco);
     string criaStringDeDados() override;
 };
