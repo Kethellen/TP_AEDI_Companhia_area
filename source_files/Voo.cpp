@@ -1,13 +1,14 @@
 #include "Voo.h"
-#include "fazCodigo.h"
+
+#define FILE_VOOS "data-files/voos.txt"
 
 /**
  * Construtor da classe Voo
- * Inicializa um novo voo com os parâmetros fornecidos
+ * Inicializa um novo voo com os parametros fornecidos
  */
 Voo::Voo(string data, string hora, string origem, string destino, string codigoAviao,
          string codigoPiloto, string codigoCopiloto, string codigoComissario, float tarifa) {
-    this->codigo = fazCodigo("data-files/voos.txt");
+    this->codigo = gerarCodigo();
     this->data = data;
     this->hora = hora;
     this->origem = origem;
@@ -19,8 +20,8 @@ Voo::Voo(string data, string hora, string origem, string destino, string codigoA
     this->tarifa = tarifa;
     this->ativo = validarTripulacao();
 
-    cout << "Criando voo de código " << this->codigo << "...\n";
-    if (!vooExiste(to_string(codigo))) {
+    cout << "Criando codigo de voo " << this->codigo << "...\n"; 
+    if (!vooExiste(this->codigo)) {
         string vooStr = criaStringDeDados();
         if (armazenaDadosEmArquivo(vooStr) == 0) {
             cout << "Voo cadastrado com sucesso!\n";
@@ -28,17 +29,17 @@ Voo::Voo(string data, string hora, string origem, string destino, string codigoA
             cerr << "Erro ao armazenar os dados do voo.\n";
         }
     } else {
-        cout << "Voo já existente.\n";
+        cout << "Voo ja existente.\n";
     }
 }
 
 /**
- * Cria uma string formatada com os dados do voo
+ * Metodo que cria uma string formatada com os dados do voo
  * @return String com os dados do voo
  */
 string Voo::criaStringDeDados() {
-    string dados = 
-        to_string(this->codigo) + "," +
+    string dados =
+        this->codigo + "," +
         this->data + "," +
         this->hora + "," +
         this->origem + "," +
@@ -54,14 +55,14 @@ string Voo::criaStringDeDados() {
 }
 
 /**
- * Verifica se um voo já existe no arquivo
- * @param identificador - Código do voo
- * @return true se o voo existir, false caso contrário
+ * Metodo que verifica se um voo ja existe no arquivo
+ * @param identificador - Codigo do voo
+ * @return true se o voo existir, false caso contrario
  */
 bool Voo::vooExiste(string identificador) {
-    ifstream arquivoVoo("data-files/voos.txt");
+    ifstream arquivoVoo(FILE_VOOS);
 
-    if (!arquivoVoo) {
+    if (!arquivoVoo.is_open()) {
         cerr << "Erro ao abrir o arquivo de voos.\n";
         return false;
     }
@@ -82,12 +83,12 @@ bool Voo::vooExiste(string identificador) {
 }
 
 /**
- * Armazena os dados do voo no arquivo
- * @param dados - Informações do voo
+ * Metodo que armazena os dados do voo no arquivo
+ * @param dados - Informacoes do voo
  * @return 1 em caso de erro, 0 em caso de sucesso
  */
 int Voo::armazenaDadosEmArquivo(string dados) {
-    ofstream arquivoVoo("data-files/voos.txt", ios::app);
+    ofstream arquivoVoo(FILE_VOOS, ios::app);
 
     if (!arquivoVoo.is_open()) {
         cerr << "Erro ao abrir o arquivo de voos.\n";
@@ -95,53 +96,87 @@ int Voo::armazenaDadosEmArquivo(string dados) {
     }
 
     arquivoVoo << dados;
-    arquivoVoo.flush();
     arquivoVoo.close();
 
     return 0;
 }
 
 /**
- * Valida se a tripulação está completa para ativar o voo
- * @return true se a tripulação for válida, false caso contrário
+ * Metodo que gera um novo codigo para o voo
+ * @return Novo codigo gerado
+ */
+string Voo::gerarCodigo() {
+    int maiorCodigoAtual = 0;
+    ifstream arquivoVoo(FILE_VOOS);
+
+    if (arquivoVoo.is_open()) {
+        string linha;
+
+        while (getline(arquivoVoo, linha)) {
+            if (linha.empty()) continue;
+
+            size_t pos = linha.find(",");
+            if (pos != string::npos) {
+                try {
+                    int codigoAtual = stoi(linha.substr(0, pos));
+                    if (codigoAtual > maiorCodigoAtual) {
+                        maiorCodigoAtual = codigoAtual;
+                    }
+                } catch (const std::invalid_argument &e) {
+                    continue;
+                } catch (const std::out_of_range &e) {
+                    continue;
+                }
+            }
+        }
+
+        arquivoVoo.close();
+    }
+
+    return to_string(maiorCodigoAtual + 1);
+}
+
+/**
+ * Metodo que valida se a tripulacao esta completa para ativar o voo
+ * @return true se a tripulacao for valida, false caso contrario
  */
 bool Voo::validarTripulacao() {
     return (!codigoPiloto.empty() && !codigoCopiloto.empty() && !codigoComissario.empty());
 }
 
 /**
- * Pesquisa um voo pelo código
- * @param identificador - Código do voo
+ * Metodo para pesquisar um voo pelo codigo
+ * @param identificador - Codigo do voo
  */
 void Voo::pesquisarVoo(string identificador) {
-    ifstream arquivoVoo("data-files/voos.txt");
+    ifstream arquivoVoo(FILE_VOOS);
 
-    if (!arquivoVoo) {
+    if (!arquivoVoo.is_open()) {
         cerr << "Erro ao abrir o arquivo de voos.\n";
         return;
     }
 
     string linha;
     while (getline(arquivoVoo, linha)) {
-        if (linha.find(identificador) != string::npos) {
+        if (linha.find(identificador + ",") == 0) {
             cout << "Voo encontrado: " << linha << endl;
             arquivoVoo.close();
             return;
         }
     }
 
-    cout << "Voo não encontrado.\n";
+    cout << "Voo nao encontrado.\n";
     arquivoVoo.close();
 }
 
 /**
- * Atualiza os dados de um voo
- * @param identificador - Código do voo
+ * Metodo para atualizar os dados de um voo
+ * @param identificador - Codigo do voo
  */
 void Voo::atualizarVoo(string identificador) {
-    ifstream arquivoVoo("data-files/voos.txt");
+    ifstream arquivoVoo(FILE_VOOS);
     if (!arquivoVoo.is_open()) {
-        cerr << "Erro ao abrir o arquivo de voos para atualização.\n";
+        cerr << "Erro ao abrir o arquivo de voos para atualizacao.\n";
         return;
     }
 
@@ -150,7 +185,7 @@ void Voo::atualizarVoo(string identificador) {
     bool encontrado = false;
 
     while (getline(arquivoVoo, linha)) {
-        if (linha.find(identificador) != string::npos) {
+        if (linha.find(identificador + ",") == 0) {
             encontrado = true;
 
             string novaData, novaHora, novaOrigem, novoDestino, novoCodigoAviao, novoCodigoPiloto, novoCodigoCopiloto, novoCodigoComissario;
@@ -165,13 +200,13 @@ void Voo::atualizarVoo(string identificador) {
             getline(cin, novaOrigem);
             cout << "Digite o novo destino: ";
             getline(cin, novoDestino);
-            cout << "Digite o novo código do avião: ";
+            cout << "Digite o novo codigo do aviao: ";
             getline(cin, novoCodigoAviao);
-            cout << "Digite o novo código do piloto: ";
+            cout << "Digite o novo codigo do piloto: ";
             getline(cin, novoCodigoPiloto);
-            cout << "Digite o novo código do copiloto: ";
+            cout << "Digite o novo codigo do copiloto: ";
             getline(cin, novoCodigoCopiloto);
-            cout << "Digite o novo código do comissário: ";
+            cout << "Digite o novo codigo do comissario: ";
             getline(cin, novoCodigoComissario);
             cout << "Digite a nova tarifa: ";
             cin >> novaTarifa;
@@ -191,24 +226,24 @@ void Voo::atualizarVoo(string identificador) {
     arquivoVoo.close();
     arquivoTemporario.close();
 
-    remove("data-files/voos.txt");
-    rename("data-files/temp.txt", "data-files/voos.txt");
+    remove(FILE_VOOS);
+    rename("data-files/temp.txt", FILE_VOOS);
 
     if (encontrado) {
         cout << "Voo atualizado com sucesso.\n";
     } else {
-        cout << "Voo não encontrado.\n";
+        cout << "Voo nao encontrado.\n";
     }
 }
 
 /**
- * Remove um voo do arquivo
- * @param identificador - Código do voo
+ * Metodo para remover um voo do arquivo
+ * @param identificador - Codigo do voo
  */
 void Voo::removerVoo(string identificador) {
-    ifstream arquivoVoo("data-files/voos.txt");
+    ifstream arquivoVoo(FILE_VOOS);
     if (!arquivoVoo.is_open()) {
-        cerr << "Erro ao abrir o arquivo de voos para exclusão.\n";
+        cerr << "Erro ao abrir o arquivo de voos para exclusao.\n";
         return;
     }
 
@@ -217,7 +252,7 @@ void Voo::removerVoo(string identificador) {
     bool encontrado = false;
 
     while (getline(arquivoVoo, linha)) {
-        if (linha.find(identificador) != string::npos) {
+        if (linha.find(identificador + ",") == 0) {
             encontrado = true;
         } else {
             arquivoTemporario << linha << endl;
@@ -227,12 +262,12 @@ void Voo::removerVoo(string identificador) {
     arquivoVoo.close();
     arquivoTemporario.close();
 
-    remove("data-files/voos.txt");
-    rename("data-files/temp.txt", "data-files/voos.txt");
+    remove(FILE_VOOS);
+    rename("data-files/temp.txt", FILE_VOOS);
 
     if (encontrado) {
         cout << "Voo removido com sucesso.\n";
     } else {
-        cout << "Voo não encontrado.\n";
+        cout << "Voo nao encontrado.\n";
     }
 }
